@@ -1,14 +1,14 @@
 package com.example.personalcapitalproject.helpers
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.personalcapitalproject.models.Article
+import com.example.personalcapitalproject.models.ArticleWrapper
 
-class ArticleDiffUtil : DiffUtil.ItemCallback<Article>() {
-    override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
-        return oldItem.id == newItem.id
+class ArticleDiffUtil : DiffUtil.ItemCallback<ArticleWrapper>() {
+    override fun areItemsTheSame(oldItem: ArticleWrapper, newItem: ArticleWrapper): Boolean {
+        return oldItem.article?.id == newItem.article?.id
     }
 
-    override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
+    override fun areContentsTheSame(oldItem: ArticleWrapper, newItem: ArticleWrapper): Boolean {
         return oldItem == newItem
     }
 }

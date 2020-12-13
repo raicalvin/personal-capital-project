@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
             override fun getSpanSize(position: Int): Int {
                 return when (position) {
                     0 -> 2
+                    1 -> 2
                     else -> 1
                 }
             }
@@ -68,9 +69,10 @@ class MainActivity : AppCompatActivity() {
         /** ViewModel Observations */
         val viewModel: BlogViewModel = ViewModelProvider(this).get(BlogViewModel::class.java)
         viewModel.viewCreated()
-        viewModel.blogResponse().observe(this, Observer { response ->
+        viewModel.blogResponseTransformed().observe(this, Observer { response ->
             response?.let {
-                articleAdapter.submitList(response.items)
+                hogwarts("$it")
+                articleAdapter.submitList(response)
             }
         })
     }

@@ -2,4 +2,12 @@
 <resources>
     <item name="main_recycler_view" type="id" />
     <item name="test_row_item" type="id" />
+
+    <item name="article_main_layout" type="id" />
+
+    <item name="article_image_view" type="id" />
+    <item name="article_title_text_view" type="id" />
+    <item name="article_summary_text_view" type="id" />
+
+    <item name="section_title_text_view" type="id" />
 </resources>
