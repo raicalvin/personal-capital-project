@@ -7,7 +7,7 @@
 
     <item name="article_image_view" type="id" />
     <item name="article_title_text_view" type="id" />
-    <item name="article_summary_text_view" type="id" />
+    <item name="article_preview_text_view" type="id" />
 
     <item name="section_title_text_view" type="id" />
 </resources>

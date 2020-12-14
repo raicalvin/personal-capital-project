@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.personalcapitalproject.R
 import com.example.personalcapitalproject.helpers.ArticleDiffUtil
+import com.example.personalcapitalproject.helpers.toPx
 import com.example.personalcapitalproject.models.Article
 import com.example.personalcapitalproject.models.ArticleWrapper
 import com.example.personalcapitalproject.models.ItemType
@@ -31,7 +32,7 @@ class ArticleAdapter : ListAdapter<ArticleWrapper, RecyclerView.ViewHolder>(Arti
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val context = parent.context
         return when (viewType) {
-            ItemType.HEADER_ARTICLE.ordinal -> ArticleViewHolder(createArticleView(context))
+            ItemType.HEADER_ARTICLE.ordinal -> ArticleViewHolder(createArticleView(context, true))
             ItemType.SECTION_TITLE.ordinal -> SectionTitleViewHolder(createSectionTitleView(context))
             else -> ArticleViewHolder(createArticleView(context))
         }
@@ -44,9 +45,6 @@ class ArticleAdapter : ListAdapter<ArticleWrapper, RecyclerView.ViewHolder>(Arti
             ItemType.SECTION_TITLE.ordinal -> (holder as SectionTitleViewHolder).bindSection(item)
             else -> (holder as ArticleViewHolder).bindHeaderArticle(item.article)
         }
-
-
-        // If position is 0, add in the secondary textView
     }
 
     /** Article ViewHolder */
@@ -76,7 +74,7 @@ class ArticleAdapter : ListAdapter<ArticleWrapper, RecyclerView.ViewHolder>(Arti
         }
     }
 
-    private fun createArticleView(context: Context): View {
+    private fun createArticleView(context: Context, includePreview: Boolean = false): View {
         // Parent Layout
         val layout = ConstraintLayout(context)
         layout.id = R.id.article_main_layout
@@ -96,10 +94,26 @@ class ArticleAdapter : ListAdapter<ArticleWrapper, RecyclerView.ViewHolder>(Arti
         titleTextView.id = R.id.article_title_text_view
         titleTextView.maxLines = 2
         titleTextView.ellipsize = TextUtils.TruncateAt.END
+        titleTextView.setPadding(16.toPx())
         val titleTextViewParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
         titleTextView.layoutParams = titleTextViewParams
         layout.addView(titleTextView)
 
+        // Preview TextView
+        val previewTextView = TextView(context)
+        previewTextView.id = R.id.article_preview_text_view
+        previewTextView.setPadding(16.toPx(), 0, 16.toPx(), 0)
+        val previewParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+        previewTextView.layoutParams = previewParams
+        previewTextView.text = "Hello, I'm the Preview!"
+        if (includePreview) {
+            previewTextView.visibility = View.VISIBLE
+        } else {
+            previewTextView.visibility = View.GONE
+        }
+        layout.addView(previewTextView)
+
+        // Set Constraints
         val layoutConstraintSet = ConstraintSet()
         layoutConstraintSet.clone(layout)
 
@@ -111,9 +125,9 @@ class ArticleAdapter : ListAdapter<ArticleWrapper, RecyclerView.ViewHolder>(Arti
         layoutConstraintSet.connect(titleTextView.id, ConstraintSet.END, layout.id, ConstraintSet.END)
         layoutConstraintSet.connect(titleTextView.id, ConstraintSet.TOP, articleImageView.id, ConstraintSet.BOTTOM)
 
-        layoutConstraintSet.applyTo(layout)
+        layoutConstraintSet.connect(previewTextView.id, ConstraintSet.TOP, titleTextView.id, ConstraintSet.BOTTOM)
 
-        // Summary TextView
+        layoutConstraintSet.applyTo(layout)
 
         return layout
     }
@@ -121,7 +135,7 @@ class ArticleAdapter : ListAdapter<ArticleWrapper, RecyclerView.ViewHolder>(Arti
     private fun createSectionTitleView(context: Context): View {
         val sectionTitleTextView = TextView(context)
         sectionTitleTextView.id = R.id.section_title_text_view
-        sectionTitleTextView.setPadding(24)
+        sectionTitleTextView.setPadding(16.toPx())
         return sectionTitleTextView
     }
 }

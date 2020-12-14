@@ -2,7 +2,6 @@ package com.example.personalcapitalproject.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.personalcapitalproject.helpers.hogwarts
 import com.example.personalcapitalproject.models.Article
 import com.example.personalcapitalproject.models.BlogResponse
 import kotlinx.coroutines.Dispatchers
@@ -20,14 +19,13 @@ class BlogRepository {
     private val blogDataString: String = "https://www.personalcapital.com/blog/feed/json"
     private val blogDataUrl = URL(blogDataString)
 
-    suspend fun fetchBlogData(): String {
-        return withContext(Dispatchers.IO) {
-            val data = downloadData()
-            data
+    suspend fun fetchBlogData() {
+        withContext(Dispatchers.IO) {
+            downloadData()
         }
     }
 
-    private fun downloadData(): String {
+    private fun downloadData() {
         val urlConnection: HttpURLConnection = blogDataUrl.openConnection() as HttpURLConnection
         try {
             val inputStream = BufferedInputStream(urlConnection.inputStream)
@@ -36,7 +34,6 @@ class BlogRepository {
         } finally {
             urlConnection.disconnect()
         }
-        return "Hello"
     }
 
     private fun readStream(stream: BufferedInputStream): String? {
@@ -90,5 +87,4 @@ class BlogRepository {
             _blogResponseLiveData.postValue(blogResponse)
         }
     }
-
 }

@@ -1,10 +1,8 @@
 package com.example.personalcapitalproject.ui
 
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -13,7 +11,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.personalcapitalproject.R
 import com.example.personalcapitalproject.adapters.ArticleAdapter
-import com.example.personalcapitalproject.helpers.hogwarts
+import com.example.personalcapitalproject.helpers.ArticleSpacingDecoration
+import com.example.personalcapitalproject.helpers.toPx
 import com.example.personalcapitalproject.viewmodels.BlogViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -24,8 +23,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // setTitle() for the title of the page
-        // getActionBar().setIcon(R.drawable.refresh_icon)
+        // TODO: setTitle() for the title of the page
+        // TODO: getActionBar().setIcon(R.drawable.refresh_icon) (Don't use drawable!)
 
         /** Parent Layout */
         val mainLayout = ConstraintLayout(this)
@@ -38,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = RecyclerView(this)
         recyclerView.id = R.id.main_recycler_view
         val rvParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
-        rvParams.setMargins(24, 24, 24, 24)
+        recyclerView.addItemDecoration(ArticleSpacingDecoration(8.toPx()))
         recyclerView.layoutParams = rvParams
 
         mainLayout.addView(recyclerView)
@@ -69,17 +68,10 @@ class MainActivity : AppCompatActivity() {
         /** ViewModel Observations */
         val viewModel: BlogViewModel = ViewModelProvider(this).get(BlogViewModel::class.java)
         viewModel.viewCreated()
-        viewModel.blogResponseTransformed().observe(this, Observer { response ->
-            response?.let {
-                hogwarts("$it")
-                articleAdapter.submitList(response)
+        viewModel.wrappedBlogArticles().observe(this, Observer { wrappedArticles ->
+            wrappedArticles?.let {
+                articleAdapter.submitList(wrappedArticles)
             }
         })
     }
 }
-
-// Steps:
-// 1. Create the RecyclerView
-// 2. Create the ListAdapter
-// 3. Wrap the items in a class with three properties: headline, section divider, article
-// 4. Construct the RV with a Grid Layout
